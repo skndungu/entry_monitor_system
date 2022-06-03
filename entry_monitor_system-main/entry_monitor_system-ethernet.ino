@@ -7,7 +7,6 @@
 
 #include <ETH.h>
 
-
 void WiFiEvent(WiFiEvent_t event)
 {
   switch (event) {

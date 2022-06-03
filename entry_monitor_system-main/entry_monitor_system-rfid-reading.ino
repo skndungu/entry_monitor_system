@@ -14,12 +14,12 @@ void setupRFID()
 {
     SPI.begin();        // Initialize SPI bus
     mfrc522.PCD_Init(); // Initialize MFRC522
-    Serial.println("Approximate your card to the reader...");
-    Serial.println();
 }
 
-void read_tag()
+void readRFIDTag()
 {
+    Serial.println("Approximate your card to the reader...");
+    Serial.println();
     // Look for new cards and reset loop if none is present
     if (!mfrc522.PICC_IsNewCardPresent())
     {
@@ -33,7 +33,6 @@ void read_tag()
     // Show UID on serial monitor
     Serial.print("UID tag :");
     String content = "";
-    byte letter;
     for (byte i = 0; i < mfrc522.uid.size; i++)
     {
         Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
@@ -44,7 +43,7 @@ void read_tag()
     Serial.println();
     Serial.print("Message : ");
     content.toUpperCase();
-
+   
     bool isIdAcceptable = false;
 
     // ******** AUTHORIZATION *********
@@ -61,11 +60,12 @@ void read_tag()
 
     if (isIdAcceptable)
     {
-        String timeStamp = getDateTime();               // get date and time
-        httpPOSTHello(content.substring(1), timeStamp); // send hello request
-
+        String timeStamp = getDateTime();                // get date and time
+        httpsPOSTHello(content.substring(1), timeStamp); // send hello request
+        numberOfUserIds = numberOfUserIds + 1;
+        userIdsList[numberOfUserIds] = content.substring(1);
+     
         Serial.println("Authorized access");
-        Serial.println();
 
         blinkLEDnBuzz(1); // blink entry led and sound buzzer
         // blinkLEDnBuzz(2); // blink exit led and sound buzzer

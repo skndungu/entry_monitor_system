@@ -11,3 +11,5 @@ extern String domain;
 extern String device_name;
 extern String userIdsList[];
 extern int numberOfUserIds;
+extern int savedNumberOfUserIds;
+extern bool eth_connected;
