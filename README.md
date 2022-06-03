@@ -5,6 +5,9 @@
 
 ## Testing & Setup :hammer:
 - all the tests done are based on the `Olimex ESP32-PoE-ISO`
+<br/>
+<img src="https://user-images.githubusercontent.com/20322653/171873462-9ebf9662-89d1-4f0c-ac91-65f4855fcba6.jpeg">
+
 - The programming IDE used is the Arduino IDE grab it [here](https://www.arduino.cc/en/software) if you don't have it already installed, based on your distribution
 ## IDE setup 
 - Once you download and install you need to do one more thing in order to add the ESP32 based boards on the the ide, flow this procedure
