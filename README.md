@@ -32,6 +32,33 @@
 - on your Arduino Ide make sure to select `OLIMEX ESP32-PoE-ISO` on the boards section under tools, also make sure to select the appropriate port <br/>
 <img width="500" alt="Screenshot 2022-06-03 at 16 24 51" src="https://user-images.githubusercontent.com/20322653/171863122-cc39af18-65c3-4f40-b437-06601c73c244.png">
 
+## Hardware Configuration and Connnections :hammer:
+Main elements under consideration here were
+- RFID Tag Reader
+- Relay 
+- LEDs & Buzzer
+
+### RFID Tag Reader
+- The mapping between the board and the tag reader can be done as follows 
+<img src="https://user-images.githubusercontent.com/20322653/171983565-ad7ea00d-4110-49d4-8cf6-43d4556da8be.png" height="400"><img width="300" alt="Screenshot 2022-06-04 at 07 38 24" src="https://user-images.githubusercontent.com/20322653/171983615-d905d1a6-ffad-46f6-a0bb-3a1afcf0d003.png">
+### Relay
+- The recommended relay module for testing is this type or similar [link](https://www.aliexpress.com/item/1005004032808437.html?spm=a2g0o.productlist.0.0.101c4c05DWJqN3&algo_pvid=08315f6b-de1b-474c-88d6-3aecf38e36be&algo_exp_id=08315f6b-de1b-474c-88d6-3aecf38e36be-6&pdp_ext_f=%7B%22sku_id%22%3A%2212000027806582449%22%7D&pdp_npi=2%40dis%21USD%21%210.61%21%21%21%21%21%400b0a556516543183697484339e86bf%2112000027806582449%21sea)
+<img width="400" alt="Screenshot 2022-06-04 at 07 53 25" src="https://user-images.githubusercontent.com/20322653/171983784-dd19e226-ecd3-43e3-b963-0f3ff2617fb9.png">
+
+
+- Connect the `IN` pin to `16` of the ESP board
+- Connect the `VDD` to `5v` on the ESP board 
+- Connect the `GND` to and `GND` on the ESP board 
+
+### LEDs & Buzzer
+- Connect the leds as follows: 
+  - `LED enter` => `Pin 3` on the ESP BOARD 
+  - `LED leave` => `Pin 4` on the ESP BOARD 
+  - `LED unrecognized` => `Pin 16` on the ESP BOARD 
+  - `LED in-operation` => `Pin 1` on the ESP BOARD 
+  - `LED setup done` => `Pin 32` on the ESP BOARD 
+  - `Buzzer` => `Pin 33` on the ESP BOARD 
+
 ## The system had several sections
   1) Setup & Registrations :white_check_mark:
   2) Ethernet setup & Internet access:white_check_mark:
