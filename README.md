@@ -51,7 +51,7 @@ Main elements under consideration here were
 - Connect the `GND` to and `GND` on the ESP board 
 
 ### LEDs & Buzzer
-- Connect the leds as follows: 
+- Connect the leds & the buzzer as follows: 
   - `LED enter` => `Pin 3` on the ESP BOARD 
   - `LED leave` => `Pin 4` on the ESP BOARD 
   - `LED unrecognized` => `Pin 16` on the ESP BOARD 
