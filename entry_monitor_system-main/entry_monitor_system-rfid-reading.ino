@@ -31,19 +31,19 @@ void readRFIDTag()
         return;
     }
     // Show UID on serial monitor
-    Serial.print("UID tag :");
+        Serial.print("UID tag :");
     String content = "";
     for (byte i = 0; i < mfrc522.uid.size; i++)
     {
-        Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-        Serial.print(mfrc522.uid.uidByte[i], HEX);
+        if (isDev)Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+        if (isDev)Serial.print(mfrc522.uid.uidByte[i], HEX);
         content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
         content.concat(String(mfrc522.uid.uidByte[i], HEX));
     }
     Serial.println();
     Serial.print("Message : ");
     content.toUpperCase();
-   
+
     bool isIdAcceptable = false;
 
     // ******** AUTHORIZATION *********
@@ -60,19 +60,19 @@ void readRFIDTag()
 
     if (isIdAcceptable)
     {
-        String timeStamp = getDateTime();                // get date and time
+        String timeStamp = getDateTime();               // get date and time
         httpsPOSTHello(content.substring(1), timeStamp); // send hello request
         numberOfUserIds = numberOfUserIds + 1;
         userIdsList[numberOfUserIds] = content.substring(1);
-     
-        Serial.println("Authorized access");
+
+            Serial.println("Authorized access");
 
         blinkLEDnBuzz(1); // blink entry led and sound buzzer
         // blinkLEDnBuzz(2); // blink exit led and sound buzzer
     }
     else
     {
-        Serial.println(" Access denied");
+            Serial.println(" Access denied");
         blinkLEDnBuzz(3); // blink access denied led
     }
 }

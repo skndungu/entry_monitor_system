@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <Preferences.h>
 
-const byte led_enter = 36;        // green
-const byte led_leave = 39;        // yellow
-const byte led_unrecognized = 34; // red
-const byte led_in_operation = 35; // green
+const byte led_enter = 3;        // green
+const byte led_leave = 4;        // yellow
+const byte led_unrecognized = 16; // red
+const byte led_in_operation = 1; // green
 const byte led_setup_done = 32;   // red
 const byte buzzer = 33;
 

@@ -10,7 +10,6 @@
 
 #include "entry_monitor_system-main.h"
 #include "entry_monitor_system-http-requests.h"
-#include "entry_monitor_system-leds-buzzer.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -29,55 +28,70 @@ const char *PARAM_LOCATION = "device_location";
 
 void read_saved_data()
 {
-  preferences.begin("system", false);
-  user_name = preferences.getString("user_name", "");
-  user_password = preferences.getString("user_password", "");
-  sessionId = preferences.getString("sessionId", "");
-  device_name = preferences.getString("_name", "");
-  device_ip = preferences.getString("ip", "");
-  device_location = preferences.getString("device_location", "");
-  domain = preferences.getString("domain", "");
+    preferences.begin("system", false);
+    user_name = preferences.getString("user_name", "");
+    user_password = preferences.getString("user_password", "");
+    sessionId = preferences.getString("sessionId", "");
+    device_name = preferences.getString("_name", "");
+    device_ip = preferences.getString("ip", "");
+    device_location = preferences.getString("device_location", "");
+    domain = preferences.getString("domain", "");
 
-  Serial.print("user name is: ");
-  Serial.println(user_name);
-  Serial.print("sessionId is: ");
-  Serial.println(sessionId);
-  Serial.print("user_password is: ");
-  Serial.println(user_password);
-  Serial.print("domain is: ");
-  Serial.println(domain);
-  Serial.print("ip is: ");
-  Serial.println(device_ip);
-  Serial.print("d-name is: ");
-  Serial.println(device_name);
-  Serial.print("location is: ");
-  Serial.println(device_location);
-  preferences.end();
+    Serial.print("user name is: ");
+    Serial.println(user_name);
+    Serial.print("sessionId is: ");
+    Serial.println(sessionId);
+    Serial.print("user_password is: ");
+    Serial.println(user_password);
+    Serial.print("domain is: ");
+    Serial.println(domain);
+    Serial.print("ip is: ");
+    Serial.println(device_ip);
+    Serial.print("d-name is: ");
+    Serial.println(device_name);
+    Serial.print("location is: ");
+    Serial.println(device_location);
+    preferences.end();
+}
+
+void check_device_status(){
+  read_saved_data();
+  if(user_name == "" && user_password == "" && device_name ==""){
+    // shows device is not registered and got not data saved, launch Access point 
+    Serial.println("No data was found! Launching Access Point ...");
+    setupRegistration();
+  } else if(sessionId == "") {
+    httpsGETRegister(device_name, user_name, user_password, device_ip, device_location);
+    // means registered so go for session ID after connecting to internet via ethernet
+  } else{
+         blinkSetupDoneLED(); // Turn on red led to show setup is already done
+         Serial.println(":::::: SETUP AND SESSION ID SET!  REACHING FOR ETHERNET...");
+  }
 }
 
 void register_and_save_data()
 {
-  // ******* After getting the parameters from the web form,
-  // ******* we call the register device HTTP request below
-  //
-  Serial.println("::::::REGISTERING");
-  //    httpGETRegister(device_name, user_name, user_password, device_ip, device_location);
-  // If sessionId has been set suuccessfuly, we store the device details to Flash
-  preferences.begin("system", false);
-  preferences.putString("user_name", user_name);
-  preferences.putString("user_password", user_password);
-  preferences.putString("sessionId", sessionId);
-  preferences.putString("_name", device_name);
-  preferences.putString("ip", device_ip);
-  preferences.putString("device_location", device_location);
-  preferences.putString("domain", domain);
-  preferences.end();
-  Serial.println(":::::: REGISTRATION SUCCESSFUL!");
-  Serial.print(">>>>>>>> Saved details!");
-  Serial.print("");
-  Serial.print("");
-  Serial.print(">>>>>>>> Restarting Device");
-  //    ESP.restart();
+    // ******* After getting the parameters from the web form,
+    // ******* we call the register device HTTP request below
+    //
+    Serial.println("::::::REGISTERING");
+//    httpGETRegister(device_name, user_name, user_password, device_ip, device_location);
+    // If sessionId has been set suuccessfuly, we store the device details to Flash
+    preferences.begin("system", false);
+    preferences.putString("user_name", user_name);
+    preferences.putString("user_password", user_password);
+    preferences.putString("sessionId", sessionId);
+    preferences.putString("_name", device_name);
+    preferences.putString("ip", device_ip);
+    preferences.putString("device_location", device_location);
+    preferences.putString("domain", domain);
+    preferences.end();
+    Serial.println(":::::: REGISTRATION SUCCESSFUL!");
+    Serial.print(">>>>>>>> Saved details!");
+    Serial.print("");Serial.print("");
+    Serial.print(">>>>>>>> Restarting Device");
+//    ESP.restart();
+ 
 }
 
 const char index_html[] PROGMEM = R"rawliteral(
@@ -152,23 +166,23 @@ const char index_html[] PROGMEM = R"rawliteral(
 
 void setupRegistration()
 {
-  preferences.begin("system", false);
-  Serial.print("Setting AP (Access Point)…");
-  // Remove the password parameter, if you want the AP (Access Point) to be open
-  WiFi.softAP(ssid, password);
+    preferences.begin("system", false);
+    Serial.print("Setting AP (Access Point)…");
+    // Remove the password parameter, if you want the AP (Access Point) to be open
+    WiFi.softAP(ssid, password);
 
-  IPAddress IP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(IP);
-  if (SETUP_MODE)
-  {
-    // Send web page with input fields to client
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send_P(200, "text/html", index_html); });
+    IPAddress IP = WiFi.softAPIP();
+    Serial.print("AP IP address: ");
+    Serial.println(IP);
+    if (SETUP_MODE)
+    {
+          // Send web page with input fields to client
+        server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+                  { request->send_P(200, "text/html", index_html); });
 
-    // Send a GET request to <ESP_IP>/get?input1=<inputMessage>
-    server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
-              {
+          // Send a GET request to <ESP_IP>/get?input1=<inputMessage>
+        server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
+                  {
      String inputMessage;
      String inputParam;
      // GET input1 value on <ESP_IP>/get?input1=<inputMessage>
@@ -205,27 +219,6 @@ void setupRegistration()
      request->send(200, "text/html", "HTTP GET request sent to your ESP on input field (" 
                                       + inputParam + ") with value: " + inputMessage +
                                       "<br><a href=\"/\">Return to Home Page</a>"); });
-    server.begin();
-  }
-}
-
-void check_device_status()
-{
-  read_saved_data();
-  if (user_name == "" && user_password == "" && device_name == "")
-  {
-    // shows device is not registered and got not data saved, launch Access point
-    Serial.println("No data was found! Launching Access Point ...");
-    setupRegistration();
-  }
-  else if (sessionId == "")
-  {
-    httpsGETRegister(device_name, user_name, user_password, device_ip, device_location);
-    // means registered so go for session ID after connecting to internet via ethernet
-  }
-  else
-  {
-    blinkSetupDoneLED(); // Turn on red led to show setup is already done
-    Serial.println(":::::: SETUP AND SESSION ID SET!  REACHING FOR ETHERNET...");
-  }
+        server.begin();
+    }
 }
