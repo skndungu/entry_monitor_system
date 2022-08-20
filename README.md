@@ -3,6 +3,11 @@
 - it also controls who is allowed to enter a premise using RFID tags 
 <br/>
 
+## PreProduction Hardware Review: 
+- Programming and usb power section Ok! :white_check_mark:
+- PoE power section Ok! :white_check_mark:
+- 
+
 ## Testing & Setup :hammer:
 - all the tests done are based on the `Olimex ESP32-PoE-ISO`
 <br/>
